@@ -5,17 +5,31 @@ Array.prototype.remove = function(item) {
     }
 };
 
+Array.prototype.next = function(item) {
+    let index = this.indexOf(item);
+    if (++index === this.length) {
+        index = 0;
+    }
+    return this[index];
+}
 
+Array.prototype.random = function() {
+    return this[Math.floor(Math.random() * this.length)];
+};
+
+
+BLOCK_SIZE = 40;
 BLOCK_HEALTH = 100;
-TANK_WIDTH = 50;
-TANK_HEIGHT = 50;
-TANK_SPEED = 5;
+TANK_WIDTH = 40;
+TANK_HEIGHT = 40;
+TANK_SPEED = 3;
 TANK_HEALTH = 100;
 TANK_COOLDOWN = 1000;
 TANK_DAMAGE = 100;
 BULLET_SIZE = 5;
 BULLET_SPEED = 10;
 TANK_SCORE = 50;
+MAX_ENEMIES_COUNT = 2;
 
 
 const Entity = function(width, height, x, y, color) {
@@ -76,6 +90,7 @@ DynamicEntity.prototype.collide = function(object) {
         } else {
             this.x = object.x + object.width;
         }
+        this.speed.x = 0;
     }
     if (this.speed.y !== 0) {
         if (this.y < object.y) {
@@ -83,6 +98,7 @@ DynamicEntity.prototype.collide = function(object) {
         } else {
             this.y = object.y + object.height;
         }
+        this.speed.y = 0;
     }
 };
 
@@ -108,10 +124,10 @@ Tank.superclass = DynamicEntity.prototype
 
 Tank.prototype.control = function(action) {
     this.speed.x = this.speed.y = 0;
-    if (action === 'UP') {
+    if (action === 'TOP') {
         this.direction = directions.TOP;
         this.speed.y = -TANK_SPEED;
-    } else if (action === 'DOWN') {
+    } else if (action === 'BOTTOM') {
         this.direction = directions.BOTTOM;
         this.speed.y = TANK_SPEED;
     } else if (action === 'LEFT') {
@@ -137,11 +153,41 @@ Tank.prototype.shoot = function() {
 Tank.prototype.hit = function(hitBy) {
     this.health -= TANK_DAMAGE;
     if (this.health <= 0) {
+        if (this === World.player.tank) {
+            return;
+        }
         World.entities.remove(this);
+        this.destroy();
         if (hitBy === World.player.tank) {
             World.player.addScore();
         }
     }
+};
+
+
+const AIEnemy = function(x, y) {
+    Tank.call(this, x, y);
+    this.shootingInterval = setInterval(this.shoot.bind(this), this.cooldown);
+}
+
+AIEnemy.prototype = Object.create(Tank.prototype);
+AIEnemy.prototype.constructor = AIEnemy;
+AIEnemy.superclass = Tank.prototype
+
+AIEnemy.prototype.control = function() {
+    AIEnemy.superclass.control.call(this, this.direction);
+};
+
+AIEnemy.prototype.collide = function(object) {
+    if (object instanceof Bullet) {
+        return;
+    }
+    AIEnemy.superclass.collide.call(this, object);
+    this.direction = Object.keys(directions).random();
+};
+
+AIEnemy.prototype.destroy = function() {
+    clearInterval(this.shootingInterval);
 };
 
 
@@ -195,26 +241,88 @@ const Player = {
 }
 
 
+const Level = function(map) {
+    this.map = map;
+}
+
+Level.prototype.getMap = function() {
+    const tiles = {
+        '#': {
+            class: Block,
+            texture: 'green'
+        },
+        '%': {
+            class: DestroyableBlock,
+            texture: 'blue'
+        }
+    }
+    const width = this.map.split('\n')[0].length;
+    return this.map.replace(/\n/g, '').split('').map((tile, i) => {
+        if (tile in tiles) {
+            return new tiles[tile].class(BLOCK_SIZE, BLOCK_SIZE * (i % width), BLOCK_SIZE * Math.floor(i / width), tiles[tile].texture);
+        }
+    }).filter(i => i);
+};
+
+
+const LevelManager = {
+    levels: [
+`########################
+#  %        #       %  #
+#  %        #       %  #
+#  %                %  #
+#  %                %  #
+#  %                %  #
+#                      #
+#   %%%%%%%%%%%%%%%%   #
+#                      #
+####                ####
+#                      #
+#   %%%%%%%%%%%%%%%%   #
+#     %          %     #
+#     %          %     #
+########################
+`,
+`########################
+#                      #
+#                      #
+#  %                %  #
+#  %                %  #
+#  %                %  #
+#                      #
+#                      #
+#                      #
+####                ####
+#                      #
+#   %%%%%%%%%%%%%%%%   #
+#     %          %     #
+#     %          %     #
+########################
+`
+    ],
+    current: -1,
+    next: function() {
+        return new Level(this.levels[++this.current]);
+    }
+}
+
+
+// const StateManager = {
+
+// }
+
+
 const World = {
     entities: [],
     player: Player,
-    init: function() {
-        this.entities = [
-            new Tank(200, 400),
-            new Tank(500, 200),
-            new Tank(200, 100),
-            new Block(50, 80, 10, 'green'),
-            new Block(50, 130, 10, 'green'),
-            new Block(50, 180, 10, 'green'),
-            new Block(50, 230, 10, 'green'),
-            new Block(50, 280, 10, 'green'),
-            new DestroyableBlock(50, 10, 50, 'blue')
-        ]
+    init: function(level) {
+        this.entities = level.getMap();
         this.player.init();
         this.entities.push(this.player.tank);
     },
     step: function(input) {
         this.player.control(input.pop());
+        this.entities.filter(entity => entity instanceof AIEnemy).forEach(entity => entity.control());
         this.entities.filter(entity => entity instanceof DynamicEntity).forEach(entity => entity.update());
         this.checkCollision();
     },
@@ -233,10 +341,33 @@ const World = {
 }
 
 
+const PlayState = {
+    levelManager: LevelManager,
+    world: World,
+    init: function() {
+        this.world.init(this.levelManager.next());
+        setInterval(this.addEnemy.bind(this), 5000);
+    },
+    update: function(input) {
+        this.world.step(input);
+    },
+    getDrawable: function() {
+        return this.world.entities;
+    },
+    addEnemy: function() {
+        if (this.world.entities.filter(e => e instanceof AIEnemy).length > MAX_ENEMIES_COUNT) {
+            return;
+        }
+        const newEnemy = new AIEnemy(50, 50);
+        this.world.entities.push(newEnemy);
+    }
+}
+
+
 const Renderer = {
     config: {
-        width: 800,
-        height: 500,
+        width: 1200,
+        height: 600,
         mount: 'root'
     },
     canvas: null,
@@ -263,9 +394,9 @@ const Renderer = {
 const InputProcessor = {
     map: {
         37: 'LEFT',
-        38: 'UP',
+        38: 'TOP',
         39: 'RIGHT',
-        40: 'DOWN',
+        40: 'BOTTOM',
         32: 'SPACE'
     },
     keys: [],
@@ -291,16 +422,17 @@ const Game = {
     },
     input: InputProcessor,
     renderer: Renderer,
-    world: World,
+    state: PlayState,
     start: function() {
         this.input.init(window);
         this.renderer.init();
-        this.interval = setInterval(this.update.bind(this), this.config.frameRate);
-        this.world.init();
+        this.state.init();
+        this.update();
     },
     update: function() {
-        this.world.step(this.input.process());
-        this.renderer.render(this.world.entities);
+        this.state.update(this.input.process());
+        this.renderer.render(this.state.getDrawable());
+        requestAnimationFrame(this.update.bind(this));
     }
 }
 
