@@ -1,3 +1,7 @@
+Array.prototype.last = function() {
+    return this.length > 0 ? this[this.length - 1] : undefined;
+};
+
 Array.prototype.remove = function(item) {
     const index = this.indexOf(item);
     if (index >= 0) {
@@ -32,6 +36,20 @@ TANK_SCORE = 50;
 MAX_ENEMIES_COUNT = 2;
 
 
+const Text = function(text, x, y, color = 'black') {
+    this.x = x;
+    this.y = y;
+    this.text = text;
+    this.color = color;
+}
+
+Text.prototype.draw = function(context) {
+    context.fillStyle = this.color;
+    context.font = '30px Arial';
+    context.fillText(this.text, this.x, this.y);
+};
+
+
 const Entity = function(width, height, x, y, color) {
     this.width = width;
     this.height = height;
@@ -39,6 +57,11 @@ const Entity = function(width, height, x, y, color) {
     this.x = x;
     this.y = y;
 }
+
+Entity.prototype.draw = function(context) {
+    context.fillStyle = this.color;
+    context.fillRect(this.x, this.y, this.width, this.height);
+};
 
 
 const Block = function(size, x, y, color) {
@@ -84,6 +107,9 @@ DynamicEntity.prototype.update = function() {
 };
 
 DynamicEntity.prototype.collide = function(object) {
+    if (object instanceof Bullet) {
+        return;
+    }
     if (this.speed.x !== 0) {
         if (this.x < object.x) {
             this.x = object.x - this.width;
@@ -154,6 +180,7 @@ Tank.prototype.hit = function(hitBy) {
     this.health -= TANK_DAMAGE;
     if (this.health <= 0) {
         if (this === World.player.tank) {
+            console.log('Dead')
             return;
         }
         World.entities.remove(this);
@@ -179,11 +206,14 @@ AIEnemy.prototype.control = function() {
 };
 
 AIEnemy.prototype.collide = function(object) {
-    if (object instanceof Bullet) {
-        return;
-    }
     AIEnemy.superclass.collide.call(this, object);
     this.direction = Object.keys(directions).random();
+};
+
+AIEnemy.prototype.hit = function(hitBy) {
+    if (!(hitBy instanceof AIEnemy)) {
+        AIEnemy.superclass.hit.call(this, hitBy);
+    }
 };
 
 AIEnemy.prototype.destroy = function() {
@@ -229,6 +259,7 @@ const Player = {
     tank: null,
     score: 0,
     init: function() {
+        this.score = 0;
         this.tank = new Tank(200, 200);
     },
     control: function(action) {
@@ -236,6 +267,7 @@ const Player = {
     },
     addScore: function() {
         this.score += TANK_SCORE;
+        PlayState.checkStatus(this);
         console.log(this.score)
     }
 }
@@ -267,6 +299,8 @@ Level.prototype.getMap = function() {
 
 const LevelManager = {
     levels: [
+    {
+        map:
 `########################
 #  %        #       %  #
 #  %        #       %  #
@@ -283,6 +317,10 @@ const LevelManager = {
 #     %          %     #
 ########################
 `,
+        score: 200
+    },
+    {
+        map:
 `########################
 #                      #
 #                      #
@@ -298,18 +336,25 @@ const LevelManager = {
 #     %          %     #
 #     %          %     #
 ########################
-`
+`,
+        score: 300
+    }
     ],
-    current: -1,
+    _current: -1,
+    winScore: function() {
+        return this.levels[this._current].score;
+    },
+    current: function() {
+        return this._current + 1;
+    },
     next: function() {
-        return new Level(this.levels[++this.current]);
+        if (++this._current >= this.levels.length) {
+            this._current = -1;
+            throw new Error('No more levels');
+        }
+        return new Level(this.levels[this._current].map);
     }
 }
-
-
-// const StateManager = {
-
-// }
 
 
 const World = {
@@ -344,9 +389,14 @@ const World = {
 const PlayState = {
     levelManager: LevelManager,
     world: World,
+    interval: null,
     init: function() {
-        this.world.init(this.levelManager.next());
-        setInterval(this.addEnemy.bind(this), 5000);
+        try {
+            this.world.init(this.levelManager.next());
+        } catch(err) {
+            StateManager.changeState(WinState);
+        }
+        this.interval = setInterval(this.addEnemy.bind(this), 5000);
     },
     update: function(input) {
         this.world.step(input);
@@ -360,6 +410,84 @@ const PlayState = {
         }
         const newEnemy = new AIEnemy(50, 50);
         this.world.entities.push(newEnemy);
+    },
+    checkStatus: function(player) {
+        if (player.score >= this.levelManager.winScore() && this.world.entities.filter(e => e instanceof AIEnemy).length === 0) {
+            StateManager.changeState(ResultsState, this.levelManager.current(), this.world.player.score);
+        }
+    },
+    destroy: function() {
+        clearInterval(this.interval);
+    }
+}
+
+
+const ResultsState = {
+    components: [],
+    init: function(level, score) {
+        this.components = [];
+        this.components.push(new Text(`Level ${level}`, 600, 50));
+        this.components.push(new Text(`Score: ${score}`, 600, 150));
+        setTimeout(StateManager.changeState.bind(StateManager, PlayState), 5000);
+    },
+    update: function(input) {
+
+    },
+    getDrawable: function() {
+        return this.components;
+    },
+    destroy: function() {
+
+    }
+}
+
+
+const WinState = {
+    init: function() {
+
+    },
+    update: function(input) {
+
+    },
+    getDrawable: function() {
+        return [
+            {
+                text: 'Congratulation!!!',
+                draw: function(ctx) {
+                    ctx.font = '30px Arial';
+                    ctx.fillText(this.text, 600, 50);
+                }
+            },
+            {
+                text: 'Score',
+                draw: function(ctx) {
+                    ctx.font = '30px Arial';
+                    ctx.fillText(this.text, 600, 150);
+                }
+            }
+        ];
+    },
+    destroy: function() {
+
+    }
+}
+
+
+const StateManager = {
+    states: [PlayState],
+    init: function(...args) {
+        this.states.last().init(...args);
+    },
+    update: function(input) {
+        this.states.last().update(input);
+    },
+    getDrawable: function() {
+        return this.states.last().getDrawable();
+    },
+    changeState: function(state, ...args) {
+        this.states.pop().destroy();
+        this.states.push(state);
+        this.init(...args);
     }
 }
 
@@ -378,11 +506,10 @@ const Renderer = {
         this.context = this.canvas.getContext('2d');
         document.getElementById(this.config.mount).append(this.canvas);
     },
-    render: function(entities) {
+    render: function(drawables) {
         this.clear();
-        entities.forEach(entity => {
-            this.context.fillStyle = entity.color;
-            this.context.fillRect(entity.x, entity.y, entity.width, entity.height);
+        drawables.forEach(drawable => {
+            drawable.draw(this.context);
         });
     },
     clear: function() {
@@ -422,7 +549,7 @@ const Game = {
     },
     input: InputProcessor,
     renderer: Renderer,
-    state: PlayState,
+    state: StateManager,
     start: function() {
         this.input.init(window);
         this.renderer.init();
