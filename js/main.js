@@ -89,6 +89,12 @@ DestroyableBlock.prototype.hit = function(first_argument) {
     }
 };
 
+
+const axis = {
+    X: 'X',
+    Y: 'Y'
+}
+
 const DynamicEntity = function(width, height, x, y, color) {
     Entity.call(this, width, height, x, y, color);
     this.speed = {
@@ -101,16 +107,19 @@ DynamicEntity.prototype = Object.create(Entity.prototype);
 DynamicEntity.prototype.constructor = DynamicEntity;
 DynamicEntity.superclass = Entity.prototype
 
-DynamicEntity.prototype.update = function() {
-    this.x += this.speed.x;
-    this.y += this.speed.y;
+DynamicEntity.prototype.update = function(axis) {
+    if (axis === 'X') {
+        this.x += this.speed.x;
+    } else {
+        this.y += this.speed.y;
+    }
 };
 
-DynamicEntity.prototype.collide = function(object) {
+DynamicEntity.prototype.collide = function(object, currentAxis) {
     if (object instanceof Bullet) {
         return;
     }
-    if (this.speed.x !== 0) {
+    if (currentAxis === axis.X && this.speed.x !== 0) {
         if (this.x < object.x) {
             this.x = object.x - this.width;
         } else {
@@ -118,7 +127,7 @@ DynamicEntity.prototype.collide = function(object) {
         }
         this.speed.x = 0;
     }
-    if (this.speed.y !== 0) {
+    if (currentAxis === axis.Y && this.speed.y !== 0) {
         if (this.y < object.y) {
             this.y = object.y - this.height;
         } else {
@@ -205,8 +214,8 @@ AIEnemy.prototype.control = function() {
     AIEnemy.superclass.control.call(this, this.direction);
 };
 
-AIEnemy.prototype.collide = function(object) {
-    AIEnemy.superclass.collide.call(this, object);
+AIEnemy.prototype.collide = function(object, axis) {
+    AIEnemy.superclass.collide.call(this, object, axis);
     this.direction = Object.keys(directions).random();
 };
 
@@ -226,14 +235,14 @@ const Bullet = function(owner, x, y, tankWidth, tankHeight, direction) {
     this.owner = owner;
     if (direction === directions.TOP) {
         this.x = x + tankWidth / 2;
-        this.y = y;
+        this.y = y - this.height;
         this.speed.y = -BULLET_SPEED;
     } else if (direction === directions.BOTTOM) {
         this.x = x + tankWidth / 2;
         this.y = y + tankHeight;
         this.speed.y = BULLET_SPEED;
     } else if (direction === directions.LEFT) {
-        this.x = x;
+        this.x = x - this.width;
         this.y = y + tankHeight / 2;
         this.speed.x = -BULLET_SPEED;
     } else if (direction === directions.RIGHT) {
@@ -368,17 +377,19 @@ const World = {
     step: function(input) {
         this.player.control(input.pop());
         this.entities.filter(entity => entity instanceof AIEnemy).forEach(entity => entity.control());
-        this.entities.filter(entity => entity instanceof DynamicEntity).forEach(entity => entity.update());
-        this.checkCollision();
+        this.entities.filter(entity => entity instanceof DynamicEntity).forEach(entity => entity.update(axis.X));
+        this.checkCollision(axis.X);
+        this.entities.filter(entity => entity instanceof DynamicEntity).forEach(entity => entity.update(axis.Y));
+        this.checkCollision(axis.Y);
     },
-    checkCollision: function() {
+    checkCollision: function(axis) {
         this.entities.filter(entity => entity instanceof DynamicEntity).forEach(entity => this.entities.forEach(e => {
             if (entity !== e) {
                 if (entity.x < e.x + e.width &&
                 entity.x + entity.width > e.x &&
                 entity.y < e.y + e.height &&
                 entity.height + entity.y > e.y) {
-                    entity.collide(e);
+                    entity.collide(e, axis);
                 }
             }
         }));
