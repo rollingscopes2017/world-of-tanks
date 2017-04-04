@@ -1,31 +1,15 @@
-import DynamicEntity from './dynamic-entity'
+import DynamicEntity, { directions } from './dynamic-entity'
 import Bullet from './bullet'
-import ResourceManager from './resource-manager'
 
 import { TANK_COOLDOWN, TANK_DAMAGE, TANK_HEALTH, TANK_HEIGHT, TANK_SPEED, TANK_WIDTH } from './constants'
 
 //tmp
 import World from './world'
 
-const directions = {
-    TOP: 'TOP',
-    BOTTOM: 'BOTTOM',
-    LEFT: 'LEFT',
-    RIGHT: 'RIGHT'
-}
-
-const angles = {
-    TOP: 0,
-    BOTTOM: 180,
-    LEFT: 270,
-    RIGHT: 90
-}
-
 class Tank extends DynamicEntity {
-    constructor(x, y) {
-        super(TANK_WIDTH, TANK_HEIGHT, x, y, ResourceManager.get('green_tank'))
+    constructor(x, y, texture) {
+        super(TANK_WIDTH, TANK_HEIGHT, x, y, texture)
         this.health = TANK_HEALTH
-        this.direction = directions.TOP
         this.cooldown = TANK_COOLDOWN
         this.isCooldown = false
     }
@@ -72,12 +56,6 @@ class Tank extends DynamicEntity {
             }
         }
     }
-
-    draw(context) {
-        super.draw(context, angles[this.direction])
-    }
 }
-
-export { directions }
 
 export default Tank

@@ -9,22 +9,14 @@ class Animation {
         this.currentFrame = startFrame
     }
 
-    step(context, targetX, targetY, targetWidth, targetHeight, angle=0) {
+    step(callback, isRun=true) {
         const x = Math.floor(this.currentFrame % this.base) * this.width
         const y = Math.floor(this.currentFrame / this.base) * this.height
 
-        if (angle !== 0) {
-            context.save()
-            context.setTransform(1,0,0,1,0,0)
-            context.translate(targetX + targetWidth / 2, targetY + targetHeight / 2)
-            const angleInRadians = angle * Math.PI / 180
-            context.rotate(angleInRadians)
+        callback(this.tileSet, x, y, this.width, this.height)
 
-            context.drawImage(this.tileSet, x, y, this.width, this.height, -targetWidth / 2, -targetHeight / 2, targetWidth, targetHeight)
-
-            context.restore();
-        } else {
-            context.drawImage(this.tileSet, x, y, this.width, this.height, targetX, targetY, targetWidth, targetHeight)
+        if (!isRun) {
+            return
         }
 
         this.currentFrame++

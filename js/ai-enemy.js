@@ -1,8 +1,10 @@
-import Tank, { directions } from './tank'
+import Tank from './tank'
+import { directions } from './dynamic-entity'
+import ResourceManager from './resource-manager'
 
 class AIEnemy extends Tank {
     constructor(x, y) {
-        super(x, y)
+        super(x, y, ResourceManager.get('blue_tank'))
         this.shootingInterval = setInterval(this.shoot.bind(this), this.cooldown)
     }
 

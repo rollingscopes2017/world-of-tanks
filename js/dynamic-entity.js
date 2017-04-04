@@ -5,6 +5,20 @@ const axis = {
     Y: 'Y'
 }
 
+const directions = {
+    TOP: 'TOP',
+    BOTTOM: 'BOTTOM',
+    LEFT: 'LEFT',
+    RIGHT: 'RIGHT'
+}
+
+const angles = {
+    TOP: 0,
+    BOTTOM: 180,
+    LEFT: 270,
+    RIGHT: 90
+}
+
 class DynamicEntity extends Entity {
     constructor(width, height, x, y, texture) {
         super(width, height, x, y, texture)
@@ -12,6 +26,7 @@ class DynamicEntity extends Entity {
             x: 0,
             y: 0
         }
+        this.direction = directions.TOP
     }
 
     update(axis) {
@@ -40,8 +55,13 @@ class DynamicEntity extends Entity {
             this.speed.y = 0
         }
     }
+
+    draw(context) {
+        const isMove = this.speed.x !== 0 || this.speed.y !== 0
+        super.draw(context, angles[this.direction], isMove)
+    }
 }
 
-export { axis }
+export { axis, directions }
 
 export default DynamicEntity

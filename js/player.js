@@ -1,4 +1,5 @@
 import Tank from './tank'
+import ResourceManager from './resource-manager'
 
 import { TANK_SCORE } from './constants'
 
@@ -10,7 +11,7 @@ const Player = {
     score: 0,
     init: function() {
         this.score = 0;
-        this.tank = new Tank(200, 200);
+        this.tank = new Tank(200, 200, ResourceManager.get('green_tank'));
     },
     control: function(action) {
         this.tank.control(action);

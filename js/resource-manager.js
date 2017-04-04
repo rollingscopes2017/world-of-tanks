@@ -6,11 +6,11 @@ const ResourceManager = {
     config: {
         'block': {
             frames: 1,
-            startFrame: 24
+            startFrame: 26
         },
         'bullet': {
             frames: 1,
-            startFrame: 21
+            startFrame: 20
         },
         'green_tank': {
             frames: 8,
