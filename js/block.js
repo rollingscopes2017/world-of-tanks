@@ -1,11 +1,9 @@
 import Entity from './entity'
 
-const Block = function(size, x, y, color) {
-    Entity.call(this, size, size, x, y, color);
+class Block extends Entity{
+    constructor(size, x, y, texture) {
+        super(size, size, x, y, texture)
+    }
 }
-
-Block.prototype = Object.create(Entity.prototype);
-Block.prototype.constructor = Block;
-Block.superclass = Entity.prototype
 
 export default Block

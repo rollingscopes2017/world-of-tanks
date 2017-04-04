@@ -1,5 +1,6 @@
 import DynamicEntity from './dynamic-entity'
 import Bullet from './bullet'
+import ResourceManager from './resource-manager'
 
 import { TANK_COOLDOWN, TANK_DAMAGE, TANK_HEALTH, TANK_HEIGHT, TANK_SPEED, TANK_WIDTH } from './constants'
 
@@ -14,7 +15,7 @@ const directions = {
 }
 
 const Tank = function(x, y) {
-    DynamicEntity.call(this, TANK_WIDTH, TANK_HEIGHT, x, y, 'red');
+    DynamicEntity.call(this, TANK_WIDTH, TANK_HEIGHT, x, y, ResourceManager.get('green_tank'));
     this.health = TANK_HEALTH;
     this.direction = directions.TOP;
     this.cooldown = TANK_COOLDOWN;

@@ -1,5 +1,3 @@
-import Game from './game'
-
 Array.prototype.last = function() {
     return this.length > 0 ? this[this.length - 1] : undefined;
 };
@@ -22,7 +20,3 @@ Array.prototype.next = function(item) {
 Array.prototype.random = function() {
     return this[Math.floor(Math.random() * this.length)];
 };
-
-window.onload = function() {
-    Game.start()
-}

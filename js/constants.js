@@ -10,3 +10,7 @@ export const BULLET_SIZE = 5
 export const BULLET_SPEED = 10
 export const TANK_SCORE = 50
 export const MAX_ENEMIES_COUNT = 2
+
+export const TEXTURE_PATH = './images/tiles.png'
+export const TEXTURE_BASE = 8
+export const TEXTURE_TILE_SIZE = 84

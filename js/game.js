@@ -1,6 +1,9 @@
 import InputProcessor from './input-processor'
 import Renderer from './renderer'
 import StateManager from './state-manager'
+import ResourceManager from './resource-manager'
+
+import { TEXTURE_PATH, TEXTURE_BASE, TEXTURE_TILE_SIZE } from './constants'
 
 const Game = {
     config: {
@@ -9,7 +12,9 @@ const Game = {
     input: InputProcessor,
     renderer: Renderer,
     state: StateManager,
+    resources: ResourceManager,
     start: function() {
+        this.resources.init(TEXTURE_PATH, TEXTURE_BASE, TEXTURE_TILE_SIZE, TEXTURE_TILE_SIZE);
         this.input.init(window);
         this.renderer.init();
         this.state.init();

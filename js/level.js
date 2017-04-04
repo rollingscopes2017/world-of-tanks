@@ -1,5 +1,6 @@
 import Block from './block'
 import DestroyableBlock from './destroyable-block'
+import ResourceManager from './resource-manager'
 
 import { BLOCK_SIZE } from './constants'
 
@@ -11,11 +12,11 @@ Level.prototype.getMap = function() {
     const tiles = {
         '#': {
             class: Block,
-            texture: 'green'
+            texture: ResourceManager.get('block')
         },
         '%': {
             class: DestroyableBlock,
-            texture: 'blue'
+            texture: ResourceManager.get('block')
         }
     }
     const width = this.map.split('\n')[0].length;
