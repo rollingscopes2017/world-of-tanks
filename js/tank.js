@@ -1,6 +1,7 @@
 import DynamicEntity, { directions } from './dynamic-entity';
 import Bullet from './bullet';
 
+import { remove } from './array-helpers';
 import { TANK_COOLDOWN, TANK_DAMAGE, TANK_HEALTH, TANK_HEIGHT, TANK_SPEED, TANK_WIDTH } from './constants';
 
 // tmp
@@ -40,7 +41,9 @@ class Tank extends DynamicEntity {
     }
     World.entities.push(new Bullet(this, this.x, this.y, this.width, this.height, this.direction));
     this.isCooldown = true;
-    setTimeout(() => this.isCooldown = false, this.cooldown);
+    setTimeout(function () {
+      this.isCooldown = false;
+    }, this.cooldown);
   }
 
   hit(hitBy) {
@@ -49,7 +52,7 @@ class Tank extends DynamicEntity {
       if (this === World.player.tank) {
         return;
       }
-      World.entities.remove(this);
+      remove(World.entities, this);
       this.destroy();
       if (hitBy === World.player.tank) {
         World.player.addScore();

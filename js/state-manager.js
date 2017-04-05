@@ -1,16 +1,17 @@
+import { last } from './array-helpers';
 // tmp
 import PlayState from './play-state';
 
 const StateManager = {
   states: [PlayState],
   init: function init(...args) {
-    this.states.last().init(...args);
+    last(this.states).init(...args);
   },
   update: function update(input) {
-    this.states.last().update(input);
+    last(this.states).update(input);
   },
   getDrawable: function getDrawable() {
-    return this.states.last().getDrawable();
+    return last(this.states).getDrawable();
   },
   changeState: function changeState(state, ...args) {
     this.states.pop().destroy();

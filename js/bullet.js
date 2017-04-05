@@ -1,5 +1,6 @@
 import DynamicEntity, { directions } from './dynamic-entity';
 import ResourceManager from './resource-manager';
+import { remove } from './array-helpers';
 
 // tmp
 import World from './world';
@@ -31,7 +32,7 @@ class Bullet extends DynamicEntity {
   }
 
   collide(object) {
-    World.entities.remove(this);
+    remove(World.entities, this);
     if (typeof object.hit === 'function') {
       object.hit(this.owner);
     }

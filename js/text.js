@@ -7,8 +7,8 @@ class Text {
   }
 
   draw(context) {
-    context.fillStyle = this.color;
-    context.font = '30px Arial';
+    // context.fillStyle = this.color;
+    // context.font = '30px Arial';
     context.fillText(this.text, this.x, this.y);
   }
 }

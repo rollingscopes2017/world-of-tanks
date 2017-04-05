@@ -1,5 +1,6 @@
 import Block from './block';
 
+import { remove } from './array-helpers';
 import { BLOCK_HEALTH, TANK_DAMAGE } from './constants';
 
 // tmp
@@ -14,7 +15,7 @@ class DestroyableBlock extends Block {
   hit() {
     this.health -= TANK_DAMAGE;
     if (this.health <= 0) {
-      World.entities.remove(this);
+      remove(World.entities, this);
     }
   }
 }

@@ -1,6 +1,7 @@
 import Tank from './tank';
 import { directions } from './dynamic-entity';
 import ResourceManager from './resource-manager';
+import { random } from './array-helpers';
 
 class AIEnemy extends Tank {
   constructor(x, y) {
@@ -14,7 +15,7 @@ class AIEnemy extends Tank {
 
   collide(object, axis) {
     super.collide.call(this, object, axis);
-    this.direction = Object.keys(directions).random();
+    this.direction = random(Object.keys(directions));
   }
 
   hit(hitBy) {
