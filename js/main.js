@@ -1,4 +1,4 @@
-import Game from './game'
+import Game from './game';
 
 Array.prototype.last = function() {
     return this.length > 0 ? this[this.length - 1] : undefined;
@@ -24,5 +24,5 @@ Array.prototype.random = function() {
 };
 
 window.onload = function() {
-    Game.start()
-}
+    Game.start();
+};

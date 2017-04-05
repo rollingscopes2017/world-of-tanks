@@ -1,9 +1,9 @@
-import Level from './level'
+import Level from './level';
 
 const LevelManager = {
-    levels: [
+  levels: [
     {
-        map:
+      map:
 `########################
 #  %        #       %  #
 #  %        #       %  #
@@ -20,10 +20,10 @@ const LevelManager = {
 #     %          %     #
 ########################
 `,
-        score: 200
+      score: 200,
     },
     {
-        map:
+      map:
 `########################
 #                      #
 #                      #
@@ -40,23 +40,24 @@ const LevelManager = {
 #     %          %     #
 ########################
 `,
-        score: 300
-    }
-    ],
-    _current: -1,
-    winScore: function() {
-        return this.levels[this._current].score;
+      score: 300,
     },
-    current: function() {
-        return this._current + 1;
-    },
-    next: function() {
-        if (++this._current >= this.levels.length) {
-            this._current = -1;
-            throw new Error('No more levels');
-        }
-        return new Level(this.levels[this._current].map);
+  ],
+  currentLevel: -1,
+  winScore: function winScore() {
+    return this.levels[this.currentLevel].score;
+  },
+  current: function current() {
+    return this.currentLevel + 1;
+  },
+  next: function next() {
+    this.currentLevel += 1;
+    if (this.currentLevel >= this.levels.length) {
+      this.currentLevel = -1;
+      throw new Error('No more levels');
     }
-}
+    return new Level(this.levels[this.currentLevel].map);
+  },
+};
 
-export default LevelManager
+export default LevelManager;
