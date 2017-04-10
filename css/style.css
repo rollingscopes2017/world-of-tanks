@@ -1,0 +1,9 @@
+.wrapper {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.player-health progress {
+    height: 50px;
+    width: 100%;
+}

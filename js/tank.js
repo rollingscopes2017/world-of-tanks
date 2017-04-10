@@ -8,9 +8,9 @@ import { TANK_COOLDOWN, TANK_DAMAGE, TANK_HEALTH, TANK_HEIGHT, TANK_SPEED, TANK_
 import World from './world';
 
 class Tank extends DynamicEntity {
-  constructor(x, y, texture) {
+  constructor(x, y, texture, health = TANK_HEALTH) {
     super(TANK_WIDTH, TANK_HEIGHT, x, y, texture);
-    this.health = TANK_HEALTH;
+    this.health = health;
     this.cooldown = TANK_COOLDOWN;
     this.isCooldown = false;
   }
@@ -41,9 +41,7 @@ class Tank extends DynamicEntity {
     }
     World.entities.push(new Bullet(this, this.x, this.y, this.width, this.height, this.direction));
     this.isCooldown = true;
-    setTimeout(function () {
-      this.isCooldown = false;
-    }, this.cooldown);
+    setTimeout(() => { this.isCooldown = false; }, this.cooldown);
   }
 
   hit(hitBy) {

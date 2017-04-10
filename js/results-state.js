@@ -8,8 +8,8 @@ const ResultsState = {
   components: [],
   init: function init(level, score) {
     this.components = [];
-    this.components.push(new Text(`Level ${level}`, 600, 50));
-    this.components.push(new Text(`Score: ${score}`, 600, 150));
+    this.components.push(new Text(`Level ${level}`, 600, 50, 'center'));
+    this.components.push(new Text(`Score: ${score}`, 600, 150, 'center'));
     setTimeout(StateManager.changeState.bind(StateManager, PlayState), 5000);
   },
   update: function update() {

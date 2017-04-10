@@ -1,7 +1,7 @@
 const Renderer = {
   config: {
     width: 1200,
-    height: 600,
+    height: 650,
     mount: 'root',
   },
   canvas: null,

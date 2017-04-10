@@ -1,15 +1,33 @@
 class Text {
-  constructor(text, x, y, color = 'black') {
+  static get align() {
+    return {
+      left: x => x,
+      center: (x, width) => x - (width / 2),
+      right: (x, width) => x - width,
+    };
+  }
+
+  constructor(text, x, y, align = 'left', color = 'black') {
     this.x = x;
     this.y = y;
-    this.text = text;
+    this.content = text;
+    this.align = align;
     this.color = color;
   }
 
   draw(context) {
-    // context.fillStyle = this.color;
-    // context.font = '30px Arial';
-    context.fillText(this.text, this.x, this.y);
+    context.save();
+    context.fillStyle = this.color;
+    context.font = '30px "Press Start 2P", cursive';
+    context.fillText(
+      this.content,
+      Text.align[this.align](this.x, this.content.length * 30),
+      this.y);
+    context.restore();
+  }
+
+  set text(value) {
+    this.content = value.toString();
   }
 }
 

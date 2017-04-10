@@ -17,7 +17,7 @@ class Level {
       },
       '%': {
         class: DestroyableBlock,
-        texture: ResourceManager.get('block'),
+        texture: ResourceManager.get('destroyable_block'),
       },
     };
     const width = this.map.split('\n')[0].length;

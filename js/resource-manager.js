@@ -8,6 +8,10 @@ const ResourceManager = {
       frames: 1,
       startFrame: 26,
     },
+    destroyable_block: {
+      frames: 1,
+      startFrame: 30,
+    },
     bullet: {
       frames: 1,
       startFrame: 20,
