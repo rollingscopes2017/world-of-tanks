@@ -1,27 +1,34 @@
+const alignments = {
+  LEFT: 'LEFT',
+  CENTER: 'CENTER',
+  RIGHT: 'RIGHT',
+};
+
 class Text {
   static get align() {
-    return {
-      left: x => x,
-      center: (x, width) => x - (width / 2),
-      right: (x, width) => x - width,
-    };
+    const result = {};
+    result[alignments.LEFT] = x => x;
+    result[alignments.CENTER] = (x, width) => x - (width / 2);
+    result[alignments.RIGHT] = (x, width) => x - width;
+    return result;
   }
 
-  constructor(text, x, y, align = 'left', color = 'black') {
+  constructor(text, x, y, align = alignments.LEFT, size = 30, color = 'black') {
     this.x = x;
     this.y = y;
     this.content = text;
     this.align = align;
+    this.height = size;
     this.color = color;
   }
 
   draw(context) {
     context.save();
     context.fillStyle = this.color;
-    context.font = '30px "Press Start 2P", cursive';
+    context.font = `${this.height}px "Press Start 2P", cursive`;
     context.fillText(
       this.content,
-      Text.align[this.align](this.x, this.content.length * 30),
+      Text.align[this.align](this.x, this.content.length * this.height),
       this.y);
     context.restore();
   }
@@ -30,5 +37,7 @@ class Text {
     this.content = value.toString();
   }
 }
+
+export { alignments };
 
 export default Text;

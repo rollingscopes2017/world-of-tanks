@@ -48,6 +48,7 @@ class Tank extends DynamicEntity {
     this.health -= TANK_DAMAGE;
     if (this.health <= 0) {
       if (this === World.player.tank) {
+        World.player.destroy();
         return;
       }
       remove(World.entities, this);

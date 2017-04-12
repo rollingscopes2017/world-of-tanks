@@ -5,7 +5,7 @@ const LevelManager = {
     {
       map:
 `########################
-#  %        #       %  #
+#  %                %  #
 #  %        #       %  #
 #  %                %  #
 #  % %############% %  #
@@ -57,6 +57,9 @@ const LevelManager = {
       throw new Error('No more levels');
     }
     return new Level(this.levels[this.currentLevel].map);
+  },
+  reset: function reset() {
+    this.currentLevel = -1;
   },
 };
 

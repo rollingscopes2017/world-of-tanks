@@ -11,7 +11,7 @@ const Player = {
   score: 0,
   init: function init() {
     this.score = 0;
-    this.tank = new Tank(500, 500, ResourceManager.get('green_tank'), TANK_HEALTH * 10);
+    this.tank = new Tank(480, 500, ResourceManager.get('green_tank'), TANK_HEALTH * 10);
   },
   control: function control(action) {
     this.tank.control(action);
@@ -22,6 +22,9 @@ const Player = {
   },
   getHealth: function getHealth() {
     return this.tank.health;
+  },
+  destroy: function destroy() {
+    PlayState.endGame();
   },
 };
 

@@ -1,4 +1,4 @@
-import Text from './text';
+import Text, { alignments } from './text';
 
 // tmp
 import StateManager from './state-manager';
@@ -8,8 +8,9 @@ const ResultsState = {
   components: [],
   init: function init(level, score) {
     this.components = [];
-    this.components.push(new Text(`Level ${level}`, 600, 50, 'center'));
-    this.components.push(new Text(`Score: ${score}`, 600, 150, 'center'));
+    // this.components.push(new Text('', 600, 50, 'center'));
+    this.components.push(new Text(`Level ${level}`, 600, 150, alignments.CENTER));
+    this.components.push(new Text(`Score: ${score}`, 600, 250, alignments.CENTER));
     setTimeout(StateManager.changeState.bind(StateManager, PlayState), 5000);
   },
   update: function update() {

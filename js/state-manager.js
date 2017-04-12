@@ -1,9 +1,9 @@
 import { last } from './array-helpers';
 // tmp
-import PlayState from './play-state';
+import MenuState from './menu-state';
 
 const StateManager = {
-  states: [PlayState],
+  states: [MenuState],
   init: function init(...args) {
     last(this.states).init(...args);
   },
