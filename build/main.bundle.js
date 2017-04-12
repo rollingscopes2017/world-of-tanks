@@ -81,7 +81,7 @@ var BLOCK_HEALTH = exports.BLOCK_HEALTH = 100;
 var TANK_WIDTH = exports.TANK_WIDTH = 40;
 var TANK_HEIGHT = exports.TANK_HEIGHT = 40;
 var TANK_SPEED = exports.TANK_SPEED = 3;
-var TANK_HEALTH = exports.TANK_HEALTH = 10;
+var TANK_HEALTH = exports.TANK_HEALTH = 50;
 var TANK_COOLDOWN = exports.TANK_COOLDOWN = 1000;
 var TANK_DAMAGE = exports.TANK_DAMAGE = 100;
 var BULLET_SIZE = exports.BULLET_SIZE = 20;
