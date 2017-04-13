@@ -3,7 +3,6 @@ import ResourceManager from './resource-manager';
 
 import { TANK_SCORE, TANK_HEALTH } from './constants';
 
-// tmp
 import PlayState from './play-state';
 
 const Player = {
@@ -11,7 +10,7 @@ const Player = {
   score: 0,
   init: function init() {
     this.score = 0;
-    this.tank = new Tank(480, 500, ResourceManager.get('green_tank'), TANK_HEALTH * 10);
+    this.tank = new Tank(480, 520, ResourceManager.get('green_tank'), TANK_HEALTH * 10);
   },
   control: function control(action) {
     this.tank.control(action);

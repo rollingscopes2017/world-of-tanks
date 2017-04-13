@@ -2,7 +2,6 @@ import DynamicEntity, { directions } from './dynamic-entity';
 import ResourceManager from './resource-manager';
 import { remove } from './array-helpers';
 
-// tmp
 import World from './world';
 
 import { BULLET_SIZE, BULLET_SPEED } from './constants';

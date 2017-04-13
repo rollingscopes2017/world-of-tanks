@@ -533,8 +533,6 @@ var _progressBar2 = _interopRequireDefault(_progressBar);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-// tmp
-
 
 var PlayState = {
   levelManager: _levelManager2.default,
@@ -742,9 +740,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// tmp
-
 
 var Bullet = function (_DynamicEntity) {
   _inherits(Bullet, _DynamicEntity);
@@ -1001,9 +996,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// tmp
-
-
 var Tank = function (_DynamicEntity) {
   _inherits(Tank, _DynamicEntity);
 
@@ -1222,9 +1214,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// tmp
-
-
 var DestroyableBlock = function (_Block) {
   _inherits(DestroyableBlock, _Block);
 
@@ -1385,6 +1374,15 @@ var LevelManager = {
   }, {
     map: '########################\n#                      #\n#      %%%%%%%%%%      #\n#  %                %  #\n#  %                %  #\n#%%%%%%%%%%%%%%%%%%%%%%#\n#         % %          #\n#######   % %    #######\n#         % %          #\n####      % %       ####\n#         % %          #\n#   %%%%%%%%%%%%%%%%   #\n#     %          %     #\n#     %          %     #\n########################\n',
     score: 300
+  }, {
+    map: '########################\n#   #              #   #\n#   #              #   #\n#                      #\n#                      #\n#                      #\n# %%%%%%%%%%%%%%%%%%%%%#\n#                      #\n#%%%%%%%%%%%%%%%%%%%%% #\n#                      #\n# %%%%%%%%%%%%%%%%%%%%%#\n#                      #\n#%%%%%%%%%%%%%%%%%%%%% #\n#                      #\n########################\n',
+    score: 500
+  }, {
+    map: '########################\n#                      #\n#      %         %     #\n#      %         %     #\n#%%%%%%%%%%%%%%%%%%%%%%#\n#           %          #\n#           %          #\n# #################### #\n#                      #\n#%%%%%%%%%%%%%%%%%%%%%%#\n#%%%%%%%%%%%%%%%%%%%%%%#\n#                      #\n#                      #\n#                      #\n########################\n',
+    score: 1000
+  }, {
+    map: '########################\n#                      #\n#  ####%%%%%%%%%%####  #\n#  %                %  #\n#  %                %  #\n#%%%%%%%%%%%%%%%%%%%%%%#\n#         % %          #\n#######   %#%    #######\n#         % %          #\n####      %#%       ####\n#         % %          #\n####%%%%%%%%%%%%%%%%####\n#     %    #     %     #\n#     %          %     #\n########################\n',
+    score: 1500
   }],
   currentLevel: -1,
   winScore: function winScore() {
@@ -1526,7 +1524,7 @@ var Player = {
   score: 0,
   init: function init() {
     this.score = 0;
-    this.tank = new _tank2.default(480, 500, _resourceManager2.default.get('green_tank'), _constants.TANK_HEALTH * 10);
+    this.tank = new _tank2.default(480, 520, _resourceManager2.default.get('green_tank'), _constants.TANK_HEALTH * 10);
   },
   control: function control(action) {
     this.tank.control(action);
@@ -1543,7 +1541,6 @@ var Player = {
   }
 };
 
-// tmp
 exports.default = Player;
 
 /***/ }),
@@ -1668,7 +1665,6 @@ var _playState2 = _interopRequireDefault(_playState);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// tmp
 var ResultsState = {
   components: [],
   init: function init(level, score) {
@@ -1676,7 +1672,7 @@ var ResultsState = {
     // this.components.push(new Text('', 600, 50, 'center'));
     this.components.push(new _text2.default('Level ' + level, 600, 150, _text.alignments.CENTER));
     this.components.push(new _text2.default('Score: ' + score, 600, 250, _text.alignments.CENTER));
-    setTimeout(_stateManager2.default.changeState.bind(_stateManager2.default, _playState2.default), 5000);
+    setTimeout(_stateManager2.default.changeState.bind(_stateManager2.default, _playState2.default), 3000);
   },
   update: function update() {},
   getDrawable: function getDrawable() {

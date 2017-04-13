@@ -4,7 +4,6 @@ import Bullet from './bullet';
 import { remove } from './array-helpers';
 import { TANK_COOLDOWN, TANK_DAMAGE, TANK_HEALTH, TANK_HEIGHT, TANK_SPEED, TANK_WIDTH } from './constants';
 
-// tmp
 import World from './world';
 
 class Tank extends DynamicEntity {
