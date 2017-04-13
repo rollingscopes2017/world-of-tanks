@@ -1,7 +1,7 @@
 import LevelManager from './level-manager';
 
 import { MAX_ENEMIES_COUNT } from './constants';
-// tmp
+
 import AIEnemy from './ai-enemy';
 import World from './world';
 import StateManager from './state-manager';

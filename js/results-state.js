@@ -1,6 +1,5 @@
 import Text, { alignments } from './text';
 
-// tmp
 import StateManager from './state-manager';
 import PlayState from './play-state';
 
@@ -11,7 +10,7 @@ const ResultsState = {
     // this.components.push(new Text('', 600, 50, 'center'));
     this.components.push(new Text(`Level ${level}`, 600, 150, alignments.CENTER));
     this.components.push(new Text(`Score: ${score}`, 600, 250, alignments.CENTER));
-    setTimeout(StateManager.changeState.bind(StateManager, PlayState), 5000);
+    setTimeout(StateManager.changeState.bind(StateManager, PlayState), 3000);
   },
   update: function update() {
 

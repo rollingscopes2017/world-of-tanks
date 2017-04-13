@@ -3,7 +3,6 @@ import Block from './block';
 import { remove } from './array-helpers';
 import { BLOCK_HEALTH, TANK_DAMAGE } from './constants';
 
-// tmp
 import World from './world';
 
 class DestroyableBlock extends Block {
