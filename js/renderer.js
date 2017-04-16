@@ -10,7 +10,7 @@ const Renderer = {
     this.canvas.width = this.config.width;
     this.canvas.height = this.config.height;
     this.context = this.canvas.getContext('2d');
-    document.getElementById(this.config.mount).append(this.canvas);
+    document.getElementById(this.config.mount).appendChild(this.canvas);
   },
   render: function render(drawables) {
     this.clear();

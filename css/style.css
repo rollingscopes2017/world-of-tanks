@@ -11,3 +11,7 @@ body {
     height: 50px;
     width: 100%;
 }
+
+#root {
+    box-shadow: 0 0 10px #000;
+}

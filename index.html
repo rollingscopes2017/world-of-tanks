@@ -1,18 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="./css/reset.css">
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
-    <title>Simple game</title>
+    <link rel="stylesheet" type="text/css" href="./css/landing.css">
+    <title>World of Tanks</title>
 </head>
 <body>
     <div class="wrapper">
-        <div id="root">
+        <nav class="topnav">
+            <a href="#">Home</a>
+            <a href="#about">About</a>
+            <a href="#control">Controls</a>
+            <a href="#play">Play</a>
+        </nav>
 
+        <div class="jumbotron">
+            <img src="./images/landing.jpg" width="1000" height="563">
+            <h1>World of tanks</h1>
         </div>
+        <section class="section" id="about">
+            <h2>About</h2>
+            <div class="row">
+                <p>
+                    The player, controlling a Tank, must destroy enemy tanks in each level, which enter the playfield from the top of the screen. The enemy tanks attempt to destroy human tank itself. A level is completed when the player destroys all enemy tanks, but the game ends if the player loses all available lives.
+                </p>
+            </div>
+        </section>
+        <section class="section" id="control">
+            <h2>Controls</h2>
+            <div class="row">
+                <div class="column">
+                    <img src="./images/arrow-keys.png" width="220" height="150">
+                </div>
+                <div class="column">
+                    <p>
+                        Use arrow keys to move your tank.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <img src="./images/space-key.png">
+                </div>
+                <div class="column">
+                    <p>
+                        Press space key to shoot.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="play">
+            <h2>Try it now</h2>
+            <div class="row play">
+                <img src="./images/screenshoot.png" width="1000">
+                <a href="./game.html" class="button">Play</a>
+            </div>
+        </section>
     </div>
-    <script src="./build/main.bundle.js"></script>
 </body>
 </html>
