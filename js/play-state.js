@@ -9,6 +9,7 @@ import ResultsState from './results-state';
 import EndState from './end-state';
 import Text, { alignments } from './text';
 import ProgressBar from './progress-bar';
+import SoundManager from './sound-manager';
 
 const PlayState = {
   levelManager: LevelManager,
@@ -20,11 +21,13 @@ const PlayState = {
       this.world.init(this.levelManager.next());
     } catch (err) {
       StateManager.changeState(EndState, 'win');
+      return;
     }
     this.interval = setInterval(this.addEnemy.bind(this), 5000);
     this.healthBar = new ProgressBar(0, 600, 1200, 50, this.world.player.getHealth());
     this.scoreLabel = new Text('Score', 1150, 100, alignments.RIGHT);
     this.scoreValue = new Text(0, 1150, 150, alignments.RIGHT);
+    SoundManager.play('soundtrack');
   },
   update: function update(input) {
     this.world.step(input);
@@ -44,6 +47,7 @@ const PlayState = {
   checkStatus: function checkStatus(player) {
     if (player.score >= this.levelManager.winScore()
       && this.world.entities.filter(e => e instanceof AIEnemy).length === 0) {
+      SoundManager.play('levelup');
       StateManager.changeState(
         ResultsState,
         this.levelManager.current(),

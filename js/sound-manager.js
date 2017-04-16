@@ -1,13 +1,16 @@
 const SoundManager = {
-  context: null,
-  sounds: null,
+  sounds: {},
   init: function init(sounds) {
-    this.context = new AudioContext();
-    const bufferLoader = new BufferLoader(this.context, sounds, this.onLoad);
-    bufferLoader.load();
+    sounds.forEach((sound) => {
+      const soundName = sound.match(/\/(\w+)\.\w+$/)[1] || sound;
+      this.sounds[soundName] = new Audio(sound);
+    });
   },
-  onLoad: function onLoad(bufferList) {
-    this.sounds = bufferList;
+  play: function play(sound) {
+    this.sounds[sound].play();
+  },
+  stop: function stop(sound) {
+    this.sounds[sound].pause();
   },
 };
 

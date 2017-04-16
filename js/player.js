@@ -4,6 +4,7 @@ import ResourceManager from './resource-manager';
 import { TANK_SCORE, TANK_HEALTH } from './constants';
 
 import PlayState from './play-state';
+import SoundManager from './sound-manager';
 
 const Player = {
   tank: null,
@@ -14,6 +15,9 @@ const Player = {
   },
   control: function control(action) {
     this.tank.control(action);
+    if (action === 'SPACE') {
+      SoundManager.play('shoot');
+    }
   },
   addScore: function addScore() {
     this.score += TANK_SCORE;

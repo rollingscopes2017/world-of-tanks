@@ -5,6 +5,7 @@ import { remove } from './array-helpers';
 import { TANK_COOLDOWN, TANK_DAMAGE, TANK_HEALTH, TANK_HEIGHT, TANK_SPEED, TANK_WIDTH } from './constants';
 
 import World from './world';
+import SoundManager from './sound-manager';
 
 class Tank extends DynamicEntity {
   constructor(x, y, texture, health = TANK_HEALTH) {
@@ -45,6 +46,7 @@ class Tank extends DynamicEntity {
 
   hit(hitBy) {
     this.health -= TANK_DAMAGE;
+    SoundManager.play('hit');
     if (this.health <= 0) {
       if (this === World.player.tank) {
         World.player.destroy();

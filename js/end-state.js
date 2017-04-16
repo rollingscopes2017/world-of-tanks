@@ -3,6 +3,7 @@ import Text, { alignments } from './text';
 
 import StateManager from './state-manager';
 import MenuState from './menu-state';
+import SoundManager from './sound-manager';
 
 const results = {
   win: {
@@ -16,6 +17,7 @@ const results = {
 const EndState = {
   components: [],
   init: function init(result) {
+    SoundManager.play(result);
     this.eventsHandler = this.mouseClick.bind(this);
     window.addEventListener('click', this.eventsHandler);
     this.components = [];

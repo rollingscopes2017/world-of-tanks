@@ -13,3 +13,12 @@ export const MAX_ENEMIES_COUNT = 4;
 export const TEXTURE_PATH = './images/tiles.png';
 export const TEXTURE_BASE = 8;
 export const TEXTURE_TILE_SIZE = 84;
+export const SOUNDS = [
+  './sounds/hit.wav',
+  './sounds/levelup.wav',
+  './sounds/lose.wav',
+  './sounds/move.wav',
+  './sounds/shoot.wav',
+  './sounds/win.wav',
+  './sounds/soundtrack.mp3',
+];

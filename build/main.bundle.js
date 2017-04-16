@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 22);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -91,6 +91,7 @@ var MAX_ENEMIES_COUNT = exports.MAX_ENEMIES_COUNT = 4;
 var TEXTURE_PATH = exports.TEXTURE_PATH = './images/tiles.png';
 var TEXTURE_BASE = exports.TEXTURE_BASE = 8;
 var TEXTURE_TILE_SIZE = exports.TEXTURE_TILE_SIZE = 84;
+var SOUNDS = exports.SOUNDS = ['./sounds/hit.wav', './sounds/levelup.wav', './sounds/lose.wav', './sounds/move.wav', './sounds/shoot.wav', './sounds/win.wav', './sounds/soundtrack.mp3'];
 
 /***/ }),
 /* 1 */
@@ -188,10 +189,40 @@ exports.default = ResourceManager;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var SoundManager = {
+  sounds: {},
+  init: function init(sounds) {
+    var _this = this;
+
+    sounds.forEach(function (sound) {
+      var soundName = sound.match(/\/(\w+)\.\w+$/)[1] || sound;
+      _this.sounds[soundName] = new Audio(sound);
+    });
+  },
+  play: function play(sound) {
+    this.sounds[sound].play();
+  },
+  stop: function stop(sound) {
+    this.sounds[sound].pause();
+  }
+};
+
+exports.default = SoundManager;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _arrayHelpers = __webpack_require__(1);
 
-var _menuState = __webpack_require__(13);
+var _menuState = __webpack_require__(14);
 
 var _menuState2 = _interopRequireDefault(_menuState);
 
@@ -225,7 +256,7 @@ var StateManager = {
 exports.default = StateManager;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -301,7 +332,7 @@ exports.alignments = alignments;
 exports.default = Text;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -316,7 +347,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _entity = __webpack_require__(12);
+var _entity = __webpack_require__(13);
 
 var _entity2 = _interopRequireDefault(_entity);
 
@@ -408,7 +439,7 @@ exports.directions = directions;
 exports.default = DynamicEntity;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -418,19 +449,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _player = __webpack_require__(23);
+var _player = __webpack_require__(24);
 
 var _player2 = _interopRequireDefault(_player);
 
-var _dynamicEntity = __webpack_require__(5);
+var _dynamicEntity = __webpack_require__(6);
 
 var _dynamicEntity2 = _interopRequireDefault(_dynamicEntity);
 
-var _aiEnemy = __webpack_require__(8);
+var _aiEnemy = __webpack_require__(9);
 
 var _aiEnemy2 = _interopRequireDefault(_aiEnemy);
 
-var _bullet = __webpack_require__(10);
+var _bullet = __webpack_require__(11);
 
 var _bullet2 = _interopRequireDefault(_bullet);
 
@@ -486,7 +517,7 @@ var World = {
 exports.default = World;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -496,39 +527,43 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _levelManager = __webpack_require__(20);
+var _levelManager = __webpack_require__(21);
 
 var _levelManager2 = _interopRequireDefault(_levelManager);
 
 var _constants = __webpack_require__(0);
 
-var _aiEnemy = __webpack_require__(8);
+var _aiEnemy = __webpack_require__(9);
 
 var _aiEnemy2 = _interopRequireDefault(_aiEnemy);
 
-var _world = __webpack_require__(6);
+var _world = __webpack_require__(7);
 
 var _world2 = _interopRequireDefault(_world);
 
-var _stateManager = __webpack_require__(3);
+var _stateManager = __webpack_require__(4);
 
 var _stateManager2 = _interopRequireDefault(_stateManager);
 
-var _resultsState = __webpack_require__(26);
+var _resultsState = __webpack_require__(27);
 
 var _resultsState2 = _interopRequireDefault(_resultsState);
 
-var _endState = __webpack_require__(18);
+var _endState = __webpack_require__(19);
 
 var _endState2 = _interopRequireDefault(_endState);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _progressBar = __webpack_require__(24);
+var _progressBar = __webpack_require__(25);
 
 var _progressBar2 = _interopRequireDefault(_progressBar);
+
+var _soundManager = __webpack_require__(3);
+
+var _soundManager2 = _interopRequireDefault(_soundManager);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -549,6 +584,7 @@ var PlayState = {
     this.healthBar = new _progressBar2.default(0, 600, 1200, 50, this.world.player.getHealth());
     this.scoreLabel = new _text2.default('Score', 1150, 100, _text.alignments.RIGHT);
     this.scoreValue = new _text2.default(0, 1150, 150, _text.alignments.RIGHT);
+    _soundManager2.default.play('soundtrack');
   },
   update: function update(input) {
     this.world.step(input);
@@ -571,6 +607,7 @@ var PlayState = {
     if (player.score >= this.levelManager.winScore() && this.world.entities.filter(function (e) {
       return e instanceof _aiEnemy2.default;
     }).length === 0) {
+      _soundManager2.default.play('levelup');
       _stateManager2.default.changeState(_resultsState2.default, this.levelManager.current(), this.world.player.score);
     }
   },
@@ -591,7 +628,7 @@ var PlayState = {
 exports.default = PlayState;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -605,11 +642,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _tank = __webpack_require__(14);
+var _tank = __webpack_require__(15);
 
 var _tank2 = _interopRequireDefault(_tank);
 
-var _dynamicEntity = __webpack_require__(5);
+var _dynamicEntity = __webpack_require__(6);
 
 var _resourceManager = __webpack_require__(2);
 
@@ -668,7 +705,7 @@ var AIEnemy = function (_Tank) {
 exports.default = AIEnemy;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -678,7 +715,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _entity = __webpack_require__(12);
+var _entity = __webpack_require__(13);
 
 var _entity2 = _interopRequireDefault(_entity);
 
@@ -705,7 +742,7 @@ var Block = function (_Entity) {
 exports.default = Block;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -717,7 +754,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dynamicEntity = __webpack_require__(5);
+var _dynamicEntity = __webpack_require__(6);
 
 var _dynamicEntity2 = _interopRequireDefault(_dynamicEntity);
 
@@ -727,7 +764,7 @@ var _resourceManager2 = _interopRequireDefault(_resourceManager);
 
 var _arrayHelpers = __webpack_require__(1);
 
-var _world = __webpack_require__(6);
+var _world = __webpack_require__(7);
 
 var _world2 = _interopRequireDefault(_world);
 
@@ -787,7 +824,7 @@ var Bullet = function (_DynamicEntity) {
 exports.default = Bullet;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -799,7 +836,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
@@ -839,7 +876,7 @@ var Button = function (_Text) {
 exports.default = Button;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -851,7 +888,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _animation = __webpack_require__(16);
+var _animation = __webpack_require__(17);
 
 var _animation2 = _interopRequireDefault(_animation);
 
@@ -902,7 +939,7 @@ var Entity = function () {
 exports.default = Entity;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -912,19 +949,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _button = __webpack_require__(11);
+var _button = __webpack_require__(12);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _stateManager = __webpack_require__(3);
+var _stateManager = __webpack_require__(4);
 
 var _stateManager2 = _interopRequireDefault(_stateManager);
 
-var _playState = __webpack_require__(7);
+var _playState = __webpack_require__(8);
 
 var _playState2 = _interopRequireDefault(_playState);
 
@@ -960,7 +997,7 @@ var MenuState = {
 exports.default = MenuState;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -972,11 +1009,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dynamicEntity = __webpack_require__(5);
+var _dynamicEntity = __webpack_require__(6);
 
 var _dynamicEntity2 = _interopRequireDefault(_dynamicEntity);
 
-var _bullet = __webpack_require__(10);
+var _bullet = __webpack_require__(11);
 
 var _bullet2 = _interopRequireDefault(_bullet);
 
@@ -984,9 +1021,13 @@ var _arrayHelpers = __webpack_require__(1);
 
 var _constants = __webpack_require__(0);
 
-var _world = __webpack_require__(6);
+var _world = __webpack_require__(7);
 
 var _world2 = _interopRequireDefault(_world);
+
+var _soundManager = __webpack_require__(3);
+
+var _soundManager2 = _interopRequireDefault(_soundManager);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1051,6 +1092,7 @@ var Tank = function (_DynamicEntity) {
     key: 'hit',
     value: function hit(hitBy) {
       this.health -= _constants.TANK_DAMAGE;
+      _soundManager2.default.play('hit');
       if (this.health <= 0) {
         if (this === _world2.default.player.tank) {
           _world2.default.player.destroy();
@@ -1071,7 +1113,7 @@ var Tank = function (_DynamicEntity) {
 exports.default = Tank;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1081,21 +1123,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _inputProcessor = __webpack_require__(19);
+var _inputProcessor = __webpack_require__(20);
 
 var _inputProcessor2 = _interopRequireDefault(_inputProcessor);
 
-var _renderer = __webpack_require__(25);
+var _renderer = __webpack_require__(26);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _stateManager = __webpack_require__(3);
+var _stateManager = __webpack_require__(4);
 
 var _stateManager2 = _interopRequireDefault(_stateManager);
 
 var _resourceManager = __webpack_require__(2);
 
 var _resourceManager2 = _interopRequireDefault(_resourceManager);
+
+var _soundManager = __webpack_require__(3);
+
+var _soundManager2 = _interopRequireDefault(_soundManager);
 
 var _constants = __webpack_require__(0);
 
@@ -1106,10 +1152,10 @@ var Game = {
   renderer: _renderer2.default,
   state: _stateManager2.default,
   resources: _resourceManager2.default,
-  // sounds: SoundManager,
+  sounds: _soundManager2.default,
   start: function start() {
     this.resources.init(_constants.TEXTURE_PATH, _constants.TEXTURE_BASE, _constants.TEXTURE_TILE_SIZE, _constants.TEXTURE_TILE_SIZE);
-    // this.sounds.init(['sound.wav']);
+    this.sounds.init(_constants.SOUNDS);
     this.input.init(window);
     this.renderer.init();
     this.state.init();
@@ -1121,12 +1167,11 @@ var Game = {
     requestAnimationFrame(this.update.bind(this));
   }
 };
-// import SoundManager from './sound-manager';
 
 exports.default = Game;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1182,7 +1227,7 @@ var Animation = function () {
 exports.default = Animation;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1194,7 +1239,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _block = __webpack_require__(9);
+var _block = __webpack_require__(10);
 
 var _block2 = _interopRequireDefault(_block);
 
@@ -1202,7 +1247,7 @@ var _arrayHelpers = __webpack_require__(1);
 
 var _constants = __webpack_require__(0);
 
-var _world = __webpack_require__(6);
+var _world = __webpack_require__(7);
 
 var _world2 = _interopRequireDefault(_world);
 
@@ -1242,7 +1287,7 @@ var DestroyableBlock = function (_Block) {
 exports.default = DestroyableBlock;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1252,21 +1297,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _button = __webpack_require__(11);
+var _button = __webpack_require__(12);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _stateManager = __webpack_require__(3);
+var _stateManager = __webpack_require__(4);
 
 var _stateManager2 = _interopRequireDefault(_stateManager);
 
-var _menuState = __webpack_require__(13);
+var _menuState = __webpack_require__(14);
 
 var _menuState2 = _interopRequireDefault(_menuState);
+
+var _soundManager = __webpack_require__(3);
+
+var _soundManager2 = _interopRequireDefault(_soundManager);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1282,6 +1331,7 @@ var results = {
 var EndState = {
   components: [],
   init: function init(result) {
+    _soundManager2.default.play(result);
     this.eventsHandler = this.mouseClick.bind(this);
     window.addEventListener('click', this.eventsHandler);
     this.components = [];
@@ -1309,7 +1359,7 @@ var EndState = {
 exports.default = EndState;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1351,7 +1401,7 @@ var InputProcessor = {
 exports.default = InputProcessor;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1361,7 +1411,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _level = __webpack_require__(21);
+var _level = __webpack_require__(22);
 
 var _level2 = _interopRequireDefault(_level);
 
@@ -1407,7 +1457,7 @@ var LevelManager = {
 exports.default = LevelManager;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1419,11 +1469,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _block = __webpack_require__(9);
+var _block = __webpack_require__(10);
 
 var _block2 = _interopRequireDefault(_block);
 
-var _destroyableBlock = __webpack_require__(17);
+var _destroyableBlock = __webpack_require__(18);
 
 var _destroyableBlock2 = _interopRequireDefault(_destroyableBlock);
 
@@ -1476,13 +1526,13 @@ var Level = function () {
 exports.default = Level;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _game = __webpack_require__(15);
+var _game = __webpack_require__(16);
 
 var _game2 = _interopRequireDefault(_game);
 
@@ -1493,7 +1543,7 @@ window.onload = function ready() {
 };
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1503,7 +1553,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _tank = __webpack_require__(14);
+var _tank = __webpack_require__(15);
 
 var _tank2 = _interopRequireDefault(_tank);
 
@@ -1513,9 +1563,13 @@ var _resourceManager2 = _interopRequireDefault(_resourceManager);
 
 var _constants = __webpack_require__(0);
 
-var _playState = __webpack_require__(7);
+var _playState = __webpack_require__(8);
 
 var _playState2 = _interopRequireDefault(_playState);
+
+var _soundManager = __webpack_require__(3);
+
+var _soundManager2 = _interopRequireDefault(_soundManager);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1528,6 +1582,9 @@ var Player = {
   },
   control: function control(action) {
     this.tank.control(action);
+    if (action === 'SPACE') {
+      _soundManager2.default.play('shoot');
+    }
   },
   addScore: function addScore() {
     this.score += _constants.TANK_SCORE;
@@ -1544,7 +1601,7 @@ var Player = {
 exports.default = Player;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1602,7 +1659,7 @@ var ProgressBar = function () {
 exports.default = ProgressBar;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1641,7 +1698,7 @@ var Renderer = {
 exports.default = Renderer;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1651,15 +1708,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _stateManager = __webpack_require__(3);
+var _stateManager = __webpack_require__(4);
 
 var _stateManager2 = _interopRequireDefault(_stateManager);
 
-var _playState = __webpack_require__(7);
+var _playState = __webpack_require__(8);
 
 var _playState2 = _interopRequireDefault(_playState);
 
